@@ -304,7 +304,7 @@ Run:
 ```
 grep -n -- "data-theme=\"dark\"\] .tile\|data-theme=\"dark\"\] .card\|data-theme=\"dark\"\] .counter\|data-theme=\"dark\"\] .stat\|data-theme=\"dark\"\] .hero\|data-theme=\"dark\"\] .deco" index.html
 ```
-Expected: 9 matches.
+Expected: 12 matches (4 `.tile.*` lines + 1 `.card` + 3 `.counter*` lines + 1 `.stat` + 2 `.hero*` lines + 1 `.deco`).
 
 ---
 
@@ -649,7 +649,7 @@ Run:
 ```
 grep -n -- "i-moon\|i-sun\|data-theme-toggle" index.html
 ```
-Expected: 2 matches for the sprite symbols (`i-moon`, `i-sun` definitions) + 3 matches for `data-theme-toggle` buttons + 3 more for the `#i-moon` used inside those buttons = 8 total.
+Expected: 5 matching lines (the `i-moon` sprite symbol line, the `i-sun` sprite symbol line, and the 3 button lines — each button line contains both `data-theme-toggle` and `#i-moon`, so it counts once per line, not twice).
 
 ---
 
