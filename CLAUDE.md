@@ -35,7 +35,8 @@ monospace system font via `--mono`.
 
 ## localStorage keys
 `packcalc_cfg` (printer, mode, theme) · `packcalc_pallets` · `packcalc_active` · `packcalc_opt` (target) ·
-`packcalc_reconcile` (pick, boxes).
+`packcalc_reconcile` (pick, boxes, logged) · `packcalc_history` (array of completed Reconcile results, capped
+at 200 entries, newest first — see `docs/superpowers/specs/2026-06-18-reconcile-history-log-design.md`).
 
 ## Architecture notes
 - `setMode(m)` (~line 900) switches Reconcile ↔ Optimize. Any feature that holds cross-screen state

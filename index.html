@@ -238,6 +238,19 @@
   .chip-pc:active{background:rgba(var(--accent-rgb),.14);}
   .chip-del{position:absolute;top:4px;right:4px;width:20px;height:20px;border:none;background:none;color:var(--muted);cursor:pointer;border-radius:5px;font-size:13px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;touch-action:manipulation;transition:var(--t);}
   .chip-del:active{color:var(--danger);background:rgba(var(--danger-rgb),.14);}
+  .hist-row{background:var(--panel);border:1px solid var(--border);border-radius:11px;margin-bottom:8px;overflow:hidden;}
+  .hist-row .hh{display:flex;align-items:center;gap:10px;padding:10px 11px;cursor:pointer;}
+  .hist-row .hh .ht{flex:1;min-width:0;}
+  .hist-row .hh .hd{font-size:12px;color:var(--muted);}
+  .hist-row .hh .hp{font-family:var(--mono);font-weight:700;font-size:14px;margin-top:1px;}
+  .hist-row .hh .hr{font-weight:800;font-size:12px;padding:3px 8px;border-radius:999px;flex:none;}
+  .hist-row .hh .hr.exact{background:var(--okbg);color:#14532d;}
+  .hist-row .hh .hr.short{background:var(--dangerbg);color:#7f1d1d;}
+  [data-theme="dark"] .hist-row .hh .hr.exact{color:#86efc6;}
+  [data-theme="dark"] .hist-row .hh .hr.short{color:#fca5a5;}
+  .hist-row .hb{display:none;padding:0 11px 11px;border-top:1px solid var(--border);}
+  .hist-row.open .hb{display:block;padding-top:9px;}
+  #history-list{max-height:60vh;overflow-y:auto;}
   [data-theme="dark"] .chip.pull{background:linear-gradient(160deg,#0f2a20,#0c2018);box-shadow:0 0 16px -6px rgba(var(--ok-rgb),.6);}
   [data-theme="dark"] .chip.pull .pc{color:#86efc6;}
   [data-theme="dark"] .chip.newest{box-shadow:0 0 0 1px rgba(var(--accent-rgb),.4),0 0 16px -6px rgba(var(--accent-rgb),.7);}
@@ -374,6 +387,7 @@
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6.5 7 7.5 20a2 2 0 0 0 2 1.9h5a2 2 0 0 0 2-1.9L18.5 7"/><path d="M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7"/></symbol>
   <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/><path d="M4 11.5v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></symbol>
   <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2.4M12 18.6V21M4.2 12H1.8M22.2 12h-2.4M5.8 5.8l1.7 1.7M16.5 16.5l1.7 1.7M18.2 5.8l-1.7 1.7M7.5 16.5l-1.7 1.7"/></symbol>
 </svg>
@@ -415,6 +429,7 @@
       <span class="mode">1 location</span>
       <button class="iconbtn" data-settings aria-label="Settings"><svg class="ico"><use href="#i-settings"/></svg></button>
       <button class="iconbtn" data-theme-toggle aria-label="Toggle dark mode"><svg class="ico"><use href="#i-moon"/></svg></button>
+      <button class="iconbtn" id="rc-history-btn" aria-label="Reconciliation history"><svg class="ico"><use href="#i-history"/></svg></button>
       <button class="iconbtn" id="rc-guide-btn" aria-label="Quick guide" aria-expanded="false" aria-controls="rc-guide">?</button>
     </header>
     <div class="guide-panel" id="rc-guide" role="region" aria-labelledby="rc-guide-btn" aria-hidden="true"><ol class="guide-steps">
@@ -505,6 +520,19 @@
   </div>
 </div>
 
+<!-- History sheet (Reconcile only) -->
+<div class="overlay" id="history-overlay">
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3>Reconciliation history</h3>
+    <div id="history-list"></div>
+    <div class="btns" style="margin-top:12px">
+      <button class="btn danger" id="history-clear"><svg class="ico"><use href="#i-trash"/></svg>Clear history</button>
+      <button class="btn sec" id="history-close">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="flash" id="flash"></div>
 <div id="edit-overlay">
   <div id="edit-card" role="dialog" aria-modal="true" aria-labelledby="edit-title">
@@ -526,13 +554,14 @@
    ============================================================ */
 
 /* ---------- storage ---------- */
-const LS = { cfg:'packcalc_cfg', pallets:'packcalc_pallets', active:'packcalc_active', opt:'packcalc_opt', recon:'packcalc_reconcile' };
+const LS = { cfg:'packcalc_cfg', pallets:'packcalc_pallets', active:'packcalc_active', opt:'packcalc_opt', recon:'packcalc_reconcile', history:'packcalc_history' };
 const store = {
   get(k,d){ try{ const v=localStorage.getItem(k); return v==null? d : JSON.parse(v); }catch(e){ return d; } },
   set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 };
 const cfg     = Object.assign({ printer:'qln420', mode:'home', theme:'light' }, store.get(LS.cfg,{}));
-let   recon   = Object.assign({ pick:null, boxes:[] }, store.get(LS.recon,{}));
+let   recon   = Object.assign({ pick:null, boxes:[], logged:false }, store.get(LS.recon,{}));
+let   history = store.get(LS.history, []);
 let   pallets = store.get(LS.pallets, []);
 let   activeId= store.get(LS.active, null);
 let   opt     = Object.assign({ target:null }, store.get(LS.opt,{}));
@@ -774,6 +803,7 @@ function saveEditBox(){
   const {mode,seq,palid}=_editCtx;
   if(mode==='recon'){
     const b=recon.boxes.find(x=>x.seq===seq); if(b) b.pieces=v;
+    recon.logged=false;
     saveRecon();
   } else {
     const p=pallets.find(x=>x.id===palid);
@@ -925,9 +955,29 @@ function doPrint(inner){
 }
 const stamp=()=> new Date().toLocaleString('en-GB');
 
+function logRecon(){
+  if(recon.logged || !recon.pick || !recon.boxes.length) return;
+  const pieces=recon.boxes.reduce((a,b)=>a+b.pieces,0);
+  if(pieces<recon.pick) return;
+  const res=solveExact(reconBoxes(),recon.pick);
+  history.unshift({
+    ts:Date.now(), pick:recon.pick,
+    boxes:recon.boxes.map(b=>({seq:b.seq,pieces:b.pieces})),
+    pieces, boxCount:recon.boxes.length,
+    result: res.exact?'EXACT':'SHORT',
+    shortfall: res.exact?0:(recon.pick-res.closest)
+  });
+  if(history.length>200) history.length=200;
+  store.set(LS.history,history);
+  recon.logged=true; saveRecon();
+}
+
 function printReconcile(){
   if(!recon.pick){ flash('Enter a pick first'); return; }
   if(!recon.boxes.length){ flash('No boxes scanned'); return; }
+  const scannedPieces=recon.boxes.reduce((a,b)=>a+b.pieces,0);
+  if(scannedPieces<recon.pick){ flash('Finish scanning before printing'); return; }
+  logRecon();
   const boxes=reconBoxes(); const res=solveExact(boxes,recon.pick);
   const pull=new Set(res.picks.map(b=>b._id));
   const pieces=recon.boxes.reduce((a,b)=>a+b.pieces,0);
@@ -943,6 +993,42 @@ function printReconcile(){
       +'<div class="chips">'+recon.boxes.slice().sort((a,b)=>a.seq-b.seq).map(b=>pchip(b.seq,b.pieces,pull.has('r'+b.seq))).join('')+'</div>';
   }
   inner+='<div class="foot">'+stamp()+'</div>';
+  doPrint(inner);
+}
+
+function renderHistory(){
+  const c=$('history-list');
+  if(!history.length){ c.innerHTML='<div class="empty">'+ic('history')+'No reconciliations logged yet.</div>'; return; }
+  c.innerHTML = history.map((h,i)=>{
+    const cls = h.result==='EXACT' ? 'exact' : 'short';
+    const label = h.result==='EXACT' ? 'EXACT' : ('SHORT −'+fmt(h.shortfall));
+    const boxesHtml = h.boxes.slice().sort((a,b)=>a.seq-b.seq).map(b=>chip(b.seq,b.pieces,false,false)).join('');
+    return '<div class="hist-row" data-idx="'+i+'">'
+      + '<div class="hh"><div class="ht"><div class="hd">'+new Date(h.ts).toLocaleString('en-GB')+'</div>'
+      +   '<div class="hp">Pick '+fmt(h.pick)+' · scanned '+fmt(h.pieces)+' ('+h.boxCount+' box'+(h.boxCount>1?'es':'')+')</div></div>'
+      +   '<span class="hr '+cls+'">'+label+'</span></div>'
+      + '<div class="hb"><div class="chips">'+boxesHtml+'</div>'
+      +   '<button class="smallbtn" style="margin-top:9px" data-hist-print="'+i+'">'+ic('printer')+'Print</button></div>'
+      + '</div>';
+  }).join('');
+}
+function printHistoryEntry(i){
+  const h=history[i]; if(!h) return;
+  const boxes=h.boxes.map(b=>({_id:'r'+b.seq,pieces:b.pieces,seq:b.seq,locKey:'r',palletName:'Pallet'}));
+  const res=solveExact(boxes,h.pick);
+  const pull=new Set(res.picks.map(b=>b._id));
+  let inner='<div class="h1">RECONCILE — PICK SLIP</div>'
+    +'<div class="meta"><b>Pick:</b> '+fmt(h.pick)+'<br>'
+    +'<b>Scanned:</b> '+fmt(h.pieces)+' ('+h.boxCount+' boxes)</div>';
+  if(res.exact){
+    inner+='<div class="res">PICK OK · EXACT 100% — pull highlighted</div>'
+      +'<div class="chips">'+h.boxes.slice().sort((a,b)=>a.seq-b.seq).map(b=>pchip(b.seq,b.pieces,pull.has('r'+b.seq))).join('')+'</div>';
+  } else {
+    const pct=Math.round(res.closest/h.pick*1000)/10;
+    inner+='<div class="res bad">NOT POSSIBLE IN WMS · closest '+fmt(res.closest)+' ('+pct+'%)</div>'
+      +'<div class="chips">'+h.boxes.slice().sort((a,b)=>a.seq-b.seq).map(b=>pchip(b.seq,b.pieces,pull.has('r'+b.seq))).join('')+'</div>';
+  }
+  inner+='<div class="foot">'+new Date(h.ts).toLocaleString('en-GB')+' (reprint)</div>';
   doPrint(inner);
 }
 
@@ -1000,7 +1086,7 @@ document.querySelectorAll('.opt[data-printer]').forEach(el=>el.onclick=()=>{ cfg
 
 /* Reconcile inputs */
 $('in-pick').value = recon.pick!=null ? recon.pick : '';
-function commitPick(){ const v=cleanToPieces($('in-pick').value); recon.pick=v; $('in-pick').value=v!=null?v:''; saveRecon(); render(); }
+function commitPick(){ const v=cleanToPieces($('in-pick').value); if(v!==recon.pick) recon.logged=false; recon.pick=v; $('in-pick').value=v!=null?v:''; saveRecon(); render(); }
 $('in-pick').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); commitPick(); focusEl('in-rscan'); } });
 $('in-pick').addEventListener('blur',commitPick);
 function handleReconScan(raw){
@@ -1008,16 +1094,35 @@ function handleReconScan(raw){
   const pc=cleanToPieces(raw);
   if(pc==null){ flash('Invalid scan'); return; }
   recon.boxes.push({ seq:recon.boxes.length+1, raw:String(raw), pieces:pc, ts:Date.now() });
+  recon.logged=false;
   saveRecon(); render();
 }
 wireScan('in-rscan', handleReconScan);
 $('rc-print').onclick=printReconcile;
 $('rc-new').onclick=()=>{
   if(recon.boxes.length && !confirm('Start a new reconciliation? This clears the current pick and scanned boxes.')) return;
-  recon={ pick:null, boxes:[] }; saveRecon();
+  logRecon();
+  recon={ pick:null, boxes:[], logged:false }; saveRecon();
   $('in-pick').value='';
   render(); focusEl('in-pick');
 };
+
+/* History overlay */
+function openHistory(){ renderHistory(); $('history-overlay').classList.add('open'); }
+$('rc-history-btn').onclick=openHistory;
+$('history-close').onclick=()=>$('history-overlay').classList.remove('open');
+$('history-overlay').addEventListener('click',e=>{ if(e.target.id==='history-overlay') $('history-overlay').classList.remove('open'); });
+$('history-clear').onclick=()=>{
+  if(!history.length) return;
+  if(!confirm('Clear all reconciliation history? This cannot be undone.')) return;
+  history=[]; store.set(LS.history,history); renderHistory();
+};
+$('history-list').addEventListener('click',e=>{
+  const printBtn=e.target.closest('[data-hist-print]');
+  if(printBtn){ printHistoryEntry(+printBtn.dataset.histPrint); return; }
+  const head=e.target.closest('.hh');
+  if(head){ head.closest('.hist-row').classList.toggle('open'); }
+});
 
 /* Optimize inputs */
 $('in-target').value = opt.target!=null ? opt.target : '';
@@ -1056,7 +1161,7 @@ $('ov-board').addEventListener('click',e=>{ const t=e.target.closest('[data-prin
 /* Chip delete / edit — Reconcile */
 $('rc-chips').addEventListener('click',e=>{
   const del=e.target.closest('.chip-del');
-  if(del){ const c=del.closest('.chip'); recon.boxes=recon.boxes.filter(b=>b.seq!==+c.dataset.seq); saveRecon(); render(); return; }
+  if(del){ const c=del.closest('.chip'); recon.boxes=recon.boxes.filter(b=>b.seq!==+c.dataset.seq); recon.logged=false; saveRecon(); render(); return; }
   const pc=e.target.closest('.chip-pc');
   if(pc){ const c=pc.closest('.chip'); const b=recon.boxes.find(x=>x.seq===+c.dataset.seq); if(b) openEditBox('recon',b.seq,null,b.pieces); }
 });
