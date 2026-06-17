@@ -754,7 +754,7 @@ Run:
 ```
 grep -c -- "data-theme=\"dark\"" index.html
 ```
-Expected: 33 (4 from Task 1 + 6 from Task 2 + 9 from Task 3 + 3 from Task 4 + 4 from Task 5 + 9 from Task 6 + 5 from Task 7 — every CSS override landed; if the count is lower, diff against this plan to find the missing selector).
+Expected: 43 matching lines (4 from Task 1 + 6 from Task 2 + 12 from Task 3 + 3 from Task 4 + 4 from Task 5 + 9 from Task 6 + 5 from Task 7 — every CSS override landed; if the count is lower, diff against this plan to find the missing selector).
 
 - [ ] **Step 6: Manual visual check**
 

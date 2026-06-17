@@ -2,9 +2,11 @@
 
 Single-file warehouse pick tool: **everything lives in `index.html`** (inline CSS + JS, vanilla, no
 framework, no build, no deps, no git). Runs offline from `localStorage` on a Zebra TC520L 5" handheld
-(Chromium WebView). UI in English; design = light bento grid with a dark header bar (see
-`docs/superpowers/specs/2026-06-17-light-bento-restyle-design.md`); codes/quantities use a monospace
-system font via `--mono`.
+(Chromium WebView). UI in English; design = light bento grid with a dark header bar by default (see
+`docs/superpowers/specs/2026-06-17-light-bento-restyle-design.md`), with a dark-OLED theme toggle
+(`cfg.theme`, `data-theme` attribute on `<html>`, see
+`docs/superpowers/specs/2026-06-17-dark-light-theme-toggle-design.md`); codes/quantities use a
+monospace system font via `--mono`.
 
 ## Run & test (Windows / PowerShell)
 - Open the app: `Start-Process index.html` (launches default browser).
