@@ -2,7 +2,9 @@
 
 Single-file warehouse pick tool: **everything lives in `index.html`** (inline CSS + JS, vanilla, no
 framework, no build, no deps, no git). Runs offline from `localStorage` on a Zebra TC520L 5" handheld
-(Chromium WebView). UI in English; design = dark OLED + bento grid.
+(Chromium WebView). UI in English; design = light bento grid with a dark header bar (see
+`docs/superpowers/specs/2026-06-17-light-bento-restyle-design.md`); codes/quantities use a monospace
+system font via `--mono`.
 
 ## Run & test (Windows / PowerShell)
 - Open the app: `Start-Process index.html` (launches default browser).
@@ -36,3 +38,7 @@ framework, no build, no deps, no git). Runs offline from `localStorage` on a Zeb
 ## Architecture notes
 - `setMode(m)` (~line 900) switches Reconcile ↔ Optimize. Any feature that holds cross-screen state
   must reset it at the top of `setMode` — otherwise state bleeds when the user navigates between modes.
+- Web app manifest is embedded in `<head>` as a `data:application/manifest+json;base64,...` link (display:
+  standalone), kept single-file on purpose. To change name/colors/icons, decode the base64, edit the JSON,
+  re-encode, and replace the `href`. Paired with `apple-mobile-web-app-capable` / `mobile-web-app-capable`
+  meta tags so Chrome/Android "Add to Home screen" and iOS "Add to Home Screen" open without browser chrome.
