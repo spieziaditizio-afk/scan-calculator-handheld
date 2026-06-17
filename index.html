@@ -120,14 +120,14 @@
   [data-theme="dark"] .counter.boxes .val{text-shadow:0 0 16px rgba(34,211,238,.3);}
 
   /* Home — bento */
-  .home-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:14px;}
+  .home-body{flex:1;display:flex;flex-direction:column;padding:14px;}
   .bento{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
   .span2{grid-column:1 / -1;}
   .card{position:relative;border:1px solid var(--border);border-radius:18px;overflow:hidden;
     background:var(--panel);
     box-shadow:0 1px 2px rgba(16,24,32,.04), 0 6px 16px -8px rgba(16,24,32,.08);}
   .deco{position:absolute;right:-14px;bottom:-16px;width:104px;height:104px;color:var(--accent);opacity:.07;pointer-events:none;}
-  .home-h{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:2px;text-align:center;margin:0 0 12px;}
+  .home-h{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:2px;text-align:center;margin:0;}
 
   .tile{cursor:pointer;padding:18px 16px;display:flex;flex-direction:column;gap:7px;min-height:128px;transition:var(--t);}
   .tile:active{transform:scale(.985);}
@@ -195,6 +195,8 @@
   .banner .ico{width:30px;height:30px;flex:none;}
   .banner .bt{font-weight:800;font-size:15px;line-height:1.15;}
   .banner .bb{font-family:var(--mono);font-size:23px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums;}
+  .banner .bs{font-size:13px;margin-top:3px;line-height:1.4;}
+  .banner .bf{font-size:11.5px;font-weight:700;margin-top:6px;line-height:1.3;opacity:.85;}
   .banner.ok{background:var(--okbg);border-color:rgba(var(--ok-rgb),.35);color:#14532d;}
   .banner.ok .ico{color:var(--ok);}
   .banner.bad{background:var(--dangerbg);border-color:rgba(var(--danger-rgb),.35);color:#7f1d1d;}
@@ -371,6 +373,7 @@
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6.5 7 7.5 20a2 2 0 0 0 2 1.9h5a2 2 0 0 0 2-1.9L18.5 7"/><path d="M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7"/></symbol>
   <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/><path d="M4 11.5v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2.4M12 18.6V21M4.2 12H1.8M22.2 12h-2.4M5.8 5.8l1.7 1.7M16.5 16.5l1.7 1.7M18.2 5.8l-1.7 1.7M7.5 16.5l-1.7 1.7"/></symbol>
 </svg>
@@ -717,12 +720,17 @@ function renderRecon(){
   }
   if(res.exact){
     r.innerHTML =
-      '<div class="banner ok">'+ic('check')+'<div><div class="bt">PICK OK · EXACT 100%</div><div class="bb">Pull '+res.picks.length+' box'+(res.picks.length>1?'es':'')+' = '+fmt(recon.pick)+'</div></div></div>'
+      '<div class="banner ok">'+ic('check')+'<div><div class="bt">PICK VALIDATED • MATCH 100%</div>'
+      +'<div class="bs">Physical stock confirmed. Safe to approve in WMS.</div>'
+      +'<div class="bf">Action: Pull '+res.picks.length+' box'+(res.picks.length>1?'es':'')+' listed below.</div></div></div>'
       + pullList(res.picks);
   } else {
     const pct=Math.round(res.closest/recon.pick*1000)/10;
+    const short=recon.pick-res.closest;
     r.innerHTML =
-      '<div class="banner bad">'+ic('alert')+'<div><div class="bt">PICK NOT POSSIBLE IN WMS</div><div class="bb">Report to team leader — no exact combination = '+fmt(recon.pick)+'</div></div></div>'
+      '<div class="banner bad">'+ic('x-circle')+'<div><div class="bt">INSUFFICIENT PIECES IN PALLET</div>'
+      +'<div class="bs">Physical stock is short by <b>'+fmt(short)+'</b> pcs. Target cannot be reached.</div>'
+      +'<div class="bf">Do not process in WMS • Report shortage to Team Leader.</div></div></div>'
       + '<div class="panel">'
       +   '<div class="kv"><span class="k">Pick required</span><span class="v">'+fmt(recon.pick)+'</span></div>'
       +   '<div class="kv"><span class="k">Closest possible (≤)</span><span class="v">'+fmt(res.closest)+' · '+pct+'%</span></div>'

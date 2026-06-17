@@ -34,7 +34,7 @@ monospace system font via `--mono`.
   use a plain `?` text character inside `.iconbtn` when a help button is needed.
 
 ## localStorage keys
-`packcalc_cfg` (printer, mode) · `packcalc_pallets` · `packcalc_active` · `packcalc_opt` (target) ·
+`packcalc_cfg` (printer, mode, theme) · `packcalc_pallets` · `packcalc_active` · `packcalc_opt` (target) ·
 `packcalc_reconcile` (pick, boxes).
 
 ## Architecture notes
