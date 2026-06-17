@@ -826,23 +826,40 @@ function printCss(){
   return page+`
    *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
    body{font-family:Arial,Helvetica,sans-serif;color:#000;margin:0;${small?'width:107mm;font-size:9pt;':'font-size:12pt;'}}
-   .h1{font-weight:800;font-size:${small?'11pt':'16pt'};margin:0 0 1mm;}
-   .meta{margin:0 0 2mm;line-height:1.35;}
+   .h1{font-weight:800;font-size:${small?'10pt':'16pt'};margin:0 0 ${small?'.5mm':'1mm'};}
+   .meta{margin:0 0 ${small?'1mm':'2mm'};line-height:${small?'1.2':'1.35'};}
    .meta b{font-weight:800;}
-   .res{font-weight:800;padding:1.5mm 2mm;border:1.5pt solid #000;border-radius:2mm;margin:0 0 2mm;display:inline-block;}
+   .res{font-weight:800;padding:${small?'.8mm 1.5mm':'1.5mm 2mm'};border:1.5pt solid #000;border-radius:2mm;margin:0 0 ${small?'1mm':'2mm'};display:inline-block;}
    .res.bad{background:#000;color:#fff;}
-   .grp{margin:0 0 2mm;} .grp .gh{font-weight:800;margin:0 0 1mm;border-bottom:.5pt solid #000;padding-bottom:.5mm;}
-   .chips{display:flex;flex-wrap:wrap;gap:${small?'1.5mm':'2.5mm'};}
-   .chip{border:1pt solid #000;border-radius:1.5mm;padding:${small?'1mm 1.5mm':'1.5mm 2.5mm'};text-align:center;min-width:${small?'12mm':'18mm'};}
+   .grp{margin:0 0 ${small?'1mm':'2mm'};break-inside:avoid;page-break-inside:avoid;}
+   .grp .gh{font-weight:800;margin:0 0 ${small?'.5mm':'1mm'};border-bottom:.5pt solid #000;padding-bottom:.5mm;}
+   .chips{display:flex;flex-wrap:wrap;gap:${small?'1mm':'2.5mm'};}
+   .chip{border:1pt solid #000;border-radius:1.5mm;padding:${small?'.6mm 1mm':'1.5mm 2.5mm'};text-align:center;min-width:${small?'10mm':'18mm'};
+     break-inside:avoid;page-break-inside:avoid;}
    .chip .bi{font-size:${small?'7pt':'9pt'};} .chip .pc{font-weight:800;font-size:${small?'11pt':'15pt'};}
    .chip.pull{background:#000;color:#fff;}
-   .foot{margin-top:2mm;font-size:${small?'7pt':'9pt'};color:#000;}
+   .foot{margin-top:${small?'1mm':'2mm'};font-size:${small?'6pt':'9pt'};color:#000;}
   `;
 }
 function pchip(seq,pc,pull){ return '<div class="chip'+(pull?' pull':'')+'"><div class="bi">'+Bnum(seq)+'</div><div class="pc">'+fmt(pc)+'</div></div>'; }
+/* Thermal labels are a fixed physical size — shrink the whole slip (CSS zoom, uniform
+   reflow) until it fits within one label's printable height, instead of letting Chromium
+   paginate and cut a box chip in half across two labels. */
+function fitToLabel(d){
+  const maxH = 57 * 96/25.4; // 63mm label - 2*3mm margin, in CSS px
+  const MIN_ZOOM = 0.55;
+  let zoom = 1;
+  for(let i=0;i<6;i++){
+    d.body.style.zoom = String(zoom);
+    const h = d.body.scrollHeight;
+    if(h<=maxH || zoom<=MIN_ZOOM) break;
+    zoom = Math.max(MIN_ZOOM, zoom*(maxH/h)*0.96);
+  }
+}
 function doPrint(inner){
   const f=$('printFrame'); const d=f.contentWindow.document;
   d.open(); d.write('<!DOCTYPE html><html><head><meta charset="utf-8"><style>'+printCss()+'</style></head><body>'+inner+'</body></html>'); d.close();
+  if(cfg.printer==='qln420') fitToLabel(d);
   setTimeout(()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(e){ flash('Print failed'); } },120);
 }
 const stamp=()=> new Date().toLocaleString('en-GB');
