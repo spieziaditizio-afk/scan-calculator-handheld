@@ -127,12 +127,6 @@
     background:var(--panel);
     box-shadow:0 1px 2px rgba(16,24,32,.04), 0 6px 16px -8px rgba(16,24,32,.08);}
   .deco{position:absolute;right:-14px;bottom:-16px;width:104px;height:104px;color:var(--accent);opacity:.07;pointer-events:none;}
-  .hero{padding:18px 18px;display:flex;align-items:center;gap:14px;background:var(--panel);}
-  .hero .badge{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;flex:none;
-    background:rgba(8,145,178,.1);border:1px solid var(--border2);color:var(--accent);}
-  .hero .badge .ico{width:30px;height:30px;}
-  .hero h1{margin:0;font-size:20px;font-weight:800;letter-spacing:.2px;}
-  .hero p{margin:3px 0 0;font-size:12.5px;color:var(--muted);line-height:1.35;}
   .home-h{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:2px;text-align:center;margin:0 0 12px;}
 
   .tile{cursor:pointer;padding:18px 16px;display:flex;flex-direction:column;gap:7px;min-height:128px;transition:var(--t);}
@@ -155,8 +149,6 @@
   [data-theme="dark"] .tile.optm .tbadge{background:linear-gradient(160deg,rgba(34,211,238,.18),rgba(34,211,238,.05));box-shadow:0 0 22px -6px rgba(34,211,238,.5);}
   [data-theme="dark"] .card{box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 12px 30px -18px rgba(0,0,0,.8);}
   [data-theme="dark"] .deco{opacity:.10;}
-  [data-theme="dark"] .hero{background:radial-gradient(120% 140% at 100% 0%, rgba(34,211,238,.12), transparent 55%), linear-gradient(160deg,var(--panel2),var(--panel));}
-  [data-theme="dark"] .hero .badge{background:linear-gradient(160deg,rgba(34,211,238,.2),rgba(34,211,238,.06));box-shadow:0 0 24px -4px rgba(34,211,238,.4);}
 
   .minitile{cursor:pointer;padding:14px;display:flex;align-items:center;gap:11px;transition:var(--t);}
   .minitile:active{transform:scale(.97);}
@@ -391,23 +383,19 @@
     </header>
     <div class="home-body">
       <div class="bento">
-        <div class="card hero span2">
-          <span class="badge"><svg class="ico"><use href="#i-warehouse"/></svg></span>
-          <div><h1>Pick &amp; Reconcile</h1><p>Scan box piece-counts, find the exact mix — built for the Zebra handheld.</p></div>
-        </div>
         <div class="home-h span2">Choose a task</div>
         <div class="card tile recon span2" id="tile-recon">
           <span class="tbadge"><svg class="ico"><use href="#i-clipboard-check"/></svg></span>
           <span class="kick">① RECONCILE</span>
-          <span class="t">Reconcile pick</span>
-          <span class="d">One location. Scan the pallet — confirm an exact 100% match or get an alert that the pick isn't possible.</span>
+          <span class="t">Count &amp; verify</span>
+          <span class="d">Count and verify box quantities to ensure they match pick requirements before WMS processing.</span>
           <svg class="ico deco"><use href="#i-clipboard-check"/></svg>
         </div>
         <div class="card tile optm span2" id="tile-opt">
           <span class="tbadge"><svg class="ico"><use href="#i-target"/></svg></span>
           <span class="kick">② OPTIMIZE</span>
-          <span class="t">Optimize pre-order</span>
-          <span class="d">Multi-location. Set a target, scan across pallets — get the best box mix ≤ target, live.</span>
+          <span class="t">Find optimal mix</span>
+          <span class="d">Find the optimal box combination across multiple SPQ and non-SPQ pallets to validate stock availability before releasing the WMS pick.</span>
           <svg class="ico deco"><use href="#i-target"/></svg>
         </div>
         <div class="card minitile" id="home-settings"><span class="mi"><svg class="ico"><use href="#i-settings"/></svg></span><div><div class="mt">Settings</div><div class="ms">Printer &amp; data</div></div></div>
