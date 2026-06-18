@@ -700,13 +700,25 @@ let lastScan={raw:'',t:0};
 function isDup(raw){ const now=Date.now(); const d=(raw===lastScan.raw && now-lastScan.t<150); lastScan={raw,t:now}; return d; }
 
 /* Hands-free scan wiring: fires on Enter/Tab suffix (instant) OR, if the scanner
-   sends no suffix, on a short idle gap after the keystroke burst. No screen touch needed. */
+   sends no suffix, on a short idle gap after the keystroke burst. No screen touch needed.
+   The idle-fire path only arms once two characters have arrived faster than
+   SCAN_BURST_GAP_MS apart (hardware-scanner speed) — manual keyboard typing has gaps
+   wider than that, so it falls back to requiring Enter/Tab instead of auto-submitting
+   a half-typed number. */
 const SCAN_IDLE_MS = 100;
+const SCAN_BURST_GAP_MS = 60;
 function wireScan(id, handler){
-  const el=$(id); let timer=null;
-  const fire=()=>{ if(timer){clearTimeout(timer);timer=null;} const v=el.value; el.value=''; if(v.trim()) handler(v); el.focus(); };
+  const el=$(id); let timer=null, lastTs=0, burstConfirmed=false;
+  const reset=()=>{ lastTs=0; burstConfirmed=false; };
+  const fire=()=>{ if(timer){clearTimeout(timer);timer=null;} const v=el.value; el.value=''; if(v.trim()) handler(v); el.focus(); reset(); };
   el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key==='Tab'){ e.preventDefault(); fire(); } });
-  el.addEventListener('input',()=>{ if(timer)clearTimeout(timer); timer=setTimeout(fire, SCAN_IDLE_MS); });
+  el.addEventListener('input',()=>{
+    const now=Date.now();
+    if(timer){ clearTimeout(timer); timer=null; }
+    if(lastTs) burstConfirmed = (now-lastTs)<=SCAN_BURST_GAP_MS;
+    lastTs=now;
+    if(burstConfirmed) timer=setTimeout(fire, SCAN_IDLE_MS);
+  });
 }
 
 /* ============================================================
