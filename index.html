@@ -743,7 +743,7 @@ function renderRecon(){
   if(!reachedPick){
     const pct=Math.round(pieces/recon.pick*1000)/10;
     r.innerHTML =
-      '<div class="banner idle">'+ic('scan')+'<div><div class="bt">Scan the boxes on this pallet.</div><div class="bb">'+fmt(pieces)+' / '+fmt(recon.pick)+' · missing '+fmt(recon.pick-pieces)+'</div></div></div>'
+      '<div class="banner idle">'+ic('scan')+'<div><div class="bt">Scan the boxes on this pallet.</div><div class="bb">'+fmt(pieces)+' / '+fmt(recon.pick)+' · '+pct+'% · missing '+fmt(recon.pick-pieces)+'</div></div></div>'
       + '<div class="panel"><div class="pct-wrap"><div class="pct-bar"><div class="pct-fill" style="width:'+Math.min(100,pct)+'%"></div></div></div></div>';
     return;
   }
