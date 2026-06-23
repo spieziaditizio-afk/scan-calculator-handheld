@@ -167,6 +167,23 @@
   .minitile .mt{font-size:13px;font-weight:700;}
   .minitile .ms{font-size:11px;color:var(--muted);}
 
+  .home-list{display:none;flex-direction:column;gap:10px;}
+  [data-theme="dark"] .bento{display:none;}
+  [data-theme="dark"] .home-list{display:flex;}
+  .row{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);
+    border-radius:16px;padding:13px 14px;cursor:pointer;transition:var(--t);}
+  .row:active{transform:scale(.985);}
+  .remoji{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+    flex:none;font-size:22px;line-height:1;}
+  .remoji.recon{background:rgba(251,191,36,.18);}
+  .remoji.opt{background:rgba(34,211,238,.18);}
+  .remoji.settings{background:var(--panel3);}
+  .remoji.printer{background:rgba(125,211,252,.18);}
+  .row .rt{flex:1;min-width:0;}
+  .row .rtt{font-size:15px;font-weight:800;line-height:1.2;color:var(--text);}
+  .row .rtd{font-size:12px;color:var(--muted);line-height:1.35;margin-top:2px;}
+  .row .rarrow{font-size:20px;color:var(--faint);flex:none;}
+
   /* Fields */
   .field{margin-bottom:11px;}
   .field label{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
@@ -436,6 +453,28 @@
         </div>
         <div class="card minitile" id="home-settings"><span class="mi"><svg class="ico"><use href="#i-settings"/></svg></span><div><div class="mt">Settings</div><div class="ms">Printer &amp; data</div></div></div>
         <div class="card minitile" id="home-printer"><span class="mi"><svg class="ico"><use href="#i-printer"/></svg></span><div><div class="mt">Printer</div><div class="ms" id="home-printer-lbl">QLn420</div></div></div>
+      </div>
+      <div class="home-list">
+        <div class="row" id="row-recon">
+          <span class="remoji recon">📦</span>
+          <div class="rt"><div class="rtt">Count &amp; verify</div><div class="rtd">Count and verify box quantities to ensure they match pick requirements before WMS processing.</div></div>
+          <span class="rarrow">›</span>
+        </div>
+        <div class="row" id="row-opt">
+          <span class="remoji opt">🧮</span>
+          <div class="rt"><div class="rtt">Mix Optimizer</div><div class="rtd">Calculate the best combination of SPQ and partial boxes across multiple locations to validate stock availability before releasing the WMS pick.</div></div>
+          <span class="rarrow">›</span>
+        </div>
+        <div class="row" id="row-settings">
+          <span class="remoji settings">⚙️</span>
+          <div class="rt"><div class="rtt">Settings</div><div class="rtd">Printer &amp; data</div></div>
+          <span class="rarrow">›</span>
+        </div>
+        <div class="row" id="row-printer">
+          <span class="remoji printer">🖨️</span>
+          <div class="rt"><div class="rtt">Printer</div><div class="rtd" id="home-printer-lbl2">QLn420</div></div>
+          <span class="rarrow">›</span>
+        </div>
       </div>
     </div>
   </div>
