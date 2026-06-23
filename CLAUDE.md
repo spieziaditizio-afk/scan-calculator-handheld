@@ -48,8 +48,10 @@ monospace system font via `--mono`.
   SVG sprite. Keep print output plain B/W text only.
 - Thermal-label printing auto-shrinks to fit one physical label (`fitToLabel()` in `doPrint()`, via CSS
   `zoom`); `.chip`/`.grp` use `break-inside:avoid` so a box can never be split across two labels.
-- Icons: inline SVG sprite (`<use href="#i-…">`), never emoji. The sprite has NO help/question icon —
-  use a plain `?` text character inside `.iconbtn` when a help button is needed.
+- Icons: inline SVG sprite (`<use href="#i-…">`), never emoji — **except** the 4 Home-screen list rows
+  shown in dark mode (Reconcile/Optimize/Settings/Printer: 📦🧮⚙️🖨️), which use real emoji per
+  `docs/superpowers/specs/2026-06-22-dark-emoji-home-redesign-design.md`. The sprite has NO help/question
+  icon — use a plain `?` text character inside `.iconbtn` when a help button is needed.
 
 ## localStorage keys
 `packcalc_cfg` (printer, mode, theme, site) · `packcalc_pallets` · `packcalc_active` · `packcalc_opt` (target) ·
