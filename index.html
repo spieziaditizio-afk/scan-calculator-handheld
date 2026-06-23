@@ -791,7 +791,12 @@ function render(){
   $('screen-home').classList.toggle('active',cfg.mode==='home');
   $('screen-recon').classList.toggle('active',cfg.mode==='reconcile');
   $('screen-opt').classList.toggle('active',cfg.mode==='optimize');
-  if(cfg.mode==='home') $('home-printer-lbl').textContent = cfg.printer==='qln420'?'QLn420':'A4';
+  if(cfg.mode==='home'){
+    const printerLbl = cfg.printer==='qln420'?'QLn420':'A4';
+    $('home-printer-lbl').textContent = printerLbl;
+    $('home-printer-lbl2').textContent = printerLbl;
+    $('hhd-site').textContent = cfg.site || '';
+  }
   if(cfg.mode==='reconcile') renderRecon();
   if(cfg.mode==='optimize') renderOpt();
   document.querySelectorAll('.opt[data-printer]').forEach(el=>el.classList.toggle('sel',el.dataset.printer===cfg.printer));
@@ -1173,10 +1178,10 @@ function printPallet(id){
 function setMode(m){ closeGuide('recon'); closeGuide('opt'); cfg.mode=m; saveCfg(); render(); if(m==='reconcile') focusEl('in-rscan'); if(m==='optimize') focusEl('in-oscan'); }
 function focusEl(id){ const e=$(id); if(e) setTimeout(()=>e.focus(),60); }
 
-$('tile-recon').onclick=()=>setMode('reconcile');
-$('tile-opt').onclick  =()=>setMode('optimize');
-$('home-settings').onclick=()=>openSettings();
-$('home-printer').onclick=()=>openSettings();
+$('tile-recon').onclick=$('row-recon').onclick=()=>setMode('reconcile');
+$('tile-opt').onclick  =$('row-opt').onclick  =()=>setMode('optimize');
+$('home-settings').onclick=$('row-settings').onclick=()=>openSettings();
+$('home-printer').onclick=$('row-printer').onclick=()=>openSettings();
 document.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>setMode('home'));
 document.querySelectorAll('[data-settings]').forEach(b=>b.onclick=()=>openSettings());
 
