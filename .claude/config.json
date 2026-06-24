@@ -1,0 +1,5 @@
+{
+  "autoApproveCommand": true,
+  "autoApproveFileWrite": true,
+  "autoApproveFileRead": true
+}
